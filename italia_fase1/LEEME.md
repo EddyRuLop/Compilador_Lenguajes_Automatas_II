@@ -221,7 +221,7 @@ Todos los textos entre comillas simples o dobles tienen tipo `delta`, incluidos 
 | Retorno incompatible | PDF III, p. 15 | Cubierto. |
 | Duplicadas en el mismo ámbito | PDF III, pp. 16–23 | Cubiertas. |
 | Indefinida e incompatibilidad con destino conocido | PDF III, p. 26 | Se reportan ambos tipos de error. |
-| Destino indefinido: reportar indefinidas y omitir incompatibilidades | PDF III, pp. 29–33 | Cubierto. |
+| Destino indefinido: reportar únicamente el destino y omitir los demás errores semánticos de esa asignación | PDF III, pp. 29–33 | Cubierto. |
 
 Las referencias son páginas del archivo PDF. Los nombres `int`, `float` y `string` se adaptan a `phi`, `rho` y `delta`. Las descripciones semánticas son `Variable indefinida`, `Función indefinida`, `Declaración duplicada` e `Incompatibilidad de tipos, <tipo>`.
 
@@ -299,6 +299,6 @@ Dividimos el programa en módulos para que cada archivo tenga una responsabilida
 
 La tabla de símbolos conserva los lexemas y sus tipos. Los ámbitos permiten distinguir las variables globales de las locales. La tabla de errores muestra el token del error, el lexema que lo provoca, el renglón y la descripción. Se utiliza una fila por lexema incorrecto, conforme a la opción dos del segundo PDF.
 
-Una regla importante es que, cuando la variable que recibe una asignación no está declarada, se reportan las variables o funciones indefinidas, pero no se inventa un tipo para comprobar la asignación. Cuando el destino sí está declarado, pueden aparecer tanto errores de identificadores indefinidos como incompatibilidades de tipos.
+Una regla importante es que, cuando la variable que recibe una asignación no está declarada, se reporta únicamente «Variable indefinida» para ese destino. Se omiten los demás errores semánticos de esa asignación y se continúa con las instrucciones siguientes. Cuando el destino sí está declarado, pueden aparecer tanto errores de identificadores indefinidos como incompatibilidades de tipos.
 
 El programa revisa el código sin ejecutarlo. Por eso puede analizar un while sin quedarse repitiendo su cuerpo. Cada análisis comienza desde cero. Los ejemplos y las pruebas están en una carpeta separada, y la interfaz comienza vacía. La revisión aprobó 79 pruebas, que incluyen los casos de los PDF, entradas mal formadas y el formato actualizado de las funciones.

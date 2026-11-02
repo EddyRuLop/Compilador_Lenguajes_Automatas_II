@@ -44,10 +44,15 @@ def analizar(codigo):
                 aritmetica.revisar(inst.expresion, inst.tipo, resultado)
             duplicadas.declarar(inst.nombres, inst.tipo, simbolos, resultado)
         elif inst.clase == 'ASIGNACION':
-            indefinidas.revisar(inst.nombres + inst.expresion, simbolos, resultado)
-            funciones.revisar_llamadas(inst.expresion, simbolos, resultado)
             destino = simbolos.buscar(inst.inicio.lexema)
-            # Si no hay tipo de destino, ambas capas siguientes se abstienen.
+            # PDF III, p. 29: un destino indefinido tiene prioridad sobre
+            # todos los errores semánticos de esta misma asignación.
+            indefinidas.revisar(inst.nombres, simbolos, resultado)
+            if destino is None:
+                i += 1
+                continue
+            indefinidas.revisar(inst.expresion, simbolos, resultado)
+            funciones.revisar_llamadas(inst.expresion, simbolos, resultado)
             asignaciones.revisar(inst.expresion, destino, simbolos, resultado)
             aritmetica.revisar(inst.expresion, destino, resultado)
         elif inst.clase == 'WHILE':

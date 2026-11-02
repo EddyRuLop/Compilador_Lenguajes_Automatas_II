@@ -37,9 +37,7 @@ void /<Proceso>/() { /<n>/ = /<Suma>/(); return; }
 
     def test_prioridad_destino_indefinido_pdf_III_33(self):
         r = analizar('/<Otro>/ = 25.5 * /<C>/ / /<C2>/();')
-        self.assertEqual(filas(r), [('/<Otro>/', 1, 'Variable indefinida'),
-                                  ('/<C>/', 1, 'Variable indefinida'),
-                                  ('/<C2>/', 1, 'Función indefinida')])
+        self.assertEqual(filas(r), [('/<Otro>/', 1, 'Variable indefinida')])
 
     def test_destino_conocido_indefinidas_y_tipos(self):
         r = analizar('phi /<n>/; /<n>/=/<Otro>/()+2.5/2;')

@@ -62,8 +62,8 @@ class ReglasPDF(unittest.TestCase):
 
     def test_destino_indefinido_pdf_III_29_31(self):
         r = analizar(BASE + '/<Otro>/ = 25.5 * /<C>/ / "52";')
-        self.assertEqual(descripciones(r), ['Variable indefinida'] * 2)
-        self.assertEqual([e['Lexema'] for e in r.errores], ['/<Otro>/', '/<C>/'])
+        self.assertEqual(descripciones(r), ['Variable indefinida'])
+        self.assertEqual([e['Lexema'] for e in r.errores], ['/<Otro>/'])
         self.assertIn({'Lexema': '/<Otro>/', 'Tipo': ''}, r.simbolos)
 
     def test_duplicadas_mismo_tipo_y_distinto_tipo(self):

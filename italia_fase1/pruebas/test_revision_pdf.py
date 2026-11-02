@@ -84,8 +84,8 @@ delta /<vSiete>/, /<vOcho>/, /<vNueve>/;
     def test_ejemplos_en_carpeta_separada(self):
         carpeta = Path(__file__).parent / 'ejemplos'
         casos = [('00_ejemplo_anterior.txt', 0), ('01_correcto.txt', 0),
-                 ('02_actividad_con_errores.txt', 14), ('03_prioridades_pdf_III.txt', 7),
-                 ('05_funciones_correctas.txt', 0), ('06_funciones_errores_pdf_III.txt', 11)]
+                 ('02_actividad_con_errores.txt', 14), ('03_prioridades_pdf_III.txt', 6),
+                 ('05_funciones_correctas.txt', 0), ('06_funciones_errores_pdf_III.txt', 9)]
         i = 0
         while i < len(casos):
             nombre, cantidad = casos[i]
