@@ -1,0 +1,27 @@
+phi /<num1>/, /<num4>/, /<num3>/;
+rho /<x2>/, /<x3>/, /<y3>/;
+delta /<msui>/, /<eduardo>/, /<pez>/;
+phi /<Suma>/() {
+    return 2 + 3;
+}
+rho /<Promedio>/() {
+    return 8.5;
+}
+void /<Mostrar>/() {
+    /<num4>/ = 10;
+}
+phi /<Entera>/() {
+    return /<x2>/ * 52;
+}
+phi /<Suma>/() {
+    return 1;
+}
+/<num1>/ = /<NoExiste>/();
+/<num1>/ = /<Promedio>/();
+/<num1>/ = /<Mostrar>/();
+/<Otro>/ = 25.5 * /<C>/ / /<C2>/();
+/<num3>/ = 25.5 * /<C3>/() / 52;
+/<x3>/ = /<Suma>/();
+while (/<num4>/ < 20) {
+    /<num4>/ = /<num4>/ + 1;
+}

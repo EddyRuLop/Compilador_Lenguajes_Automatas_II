@@ -1,0 +1,21 @@
+phi /<num1>/, /<num4>/, /<num3>/;
+rho /<x2>/, /<x3>/, /<y3>/;
+delta /<msui>/, /<eduardo>/, /<pez>/;
+/<num1>/ = 0;
+/<num4>/ = 10;
+/<num3>/ = /<num4>/ * 2 + 3;
+/<x2>/ = 3.14;
+/<x3>/ = /<num4>/ / 2;
+/<y3>/ = /<x2>/ + /<x3>/;
+/<msui>/ = "hola";
+/<eduardo>/ = 'E';
+/<pez>/ = /<msui>/ - "la";
+while (/<num1>/ < 3) {
+    /<num1>/ = /<num1>/ + 1;
+    /<x2>/ = /<x2>/ + 0.5;
+    while (/<num4>/ > 0 && /<num1>/ < 2) {
+        /<num4>/ = /<num4>/ - 1;
+    }
+}
+/<eduardo>/ = /<msui>/ + " Eduardo";
+/<x3>/ = (/<num3>/ + 2) / 4;

@@ -1,0 +1,16 @@
+phi /<contador>/;
+delta /<letra>/, /<texto>/, /<vacio>/;
+/<contador>/ = 0;
+/<letra>/ = 'A';
+/<texto>/ = 'Hola';
+/<vacio>/ = '';
+delta /<Mensaje>/() {
+    return /<letra>/ + " " + /<texto>/;
+}
+void /<Actualizar>/() {
+    /<texto>/ = /<Mensaje>/();
+    /<contador>/ = /<contador>/ + 1;
+}
+while (/<contador>/ < 2) {
+    /<Actualizar>/();
+}

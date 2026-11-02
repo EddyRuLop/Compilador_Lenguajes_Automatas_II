@@ -1,0 +1,13 @@
+phi /<num1>/, /<num4>/, /<num3>/;
+rho /<x2>/, /<x3>/, /<y3>/;
+delta /<msui>/, /<eduardo>/, /<pez>/;
+phi /<nombre_mal>/;
+/<num1>/ = 12abc;
+/<x2>/ = 1.2.3;
+/<num1>/ = 1 +;
+/<msui>/ = "sin cierre
+/<num4>/ = (1 + 2;
+while () {
+    /<num3>/ = 2.5;
+}
+/<num1>/ = 3.14;
