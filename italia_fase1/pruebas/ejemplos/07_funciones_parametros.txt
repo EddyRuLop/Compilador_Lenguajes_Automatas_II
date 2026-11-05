@@ -1,0 +1,13 @@
+phi /<base>/ = 10;
+
+phi /<Suma>/(phi /<a>/, phi /<b>/)
+{
+    phi /<resultado>/ = /<a>/ + /<b>/;
+    while (/<resultado>/ < /<base>/)
+    {
+        /<resultado>/ = /<resultado>/ + 1;
+    }
+    return /<resultado>/;
+}
+
+phi /<total>/ = /<Suma>/(2, 3);

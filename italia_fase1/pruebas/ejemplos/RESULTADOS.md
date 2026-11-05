@@ -1,6 +1,8 @@
 # Resultados esperados de los ejemplos
 
-Actualización: funciones sin parámetros, tipos phi/rho/delta/void y return.
+Actualización: funciones con y sin parámetros, tipos phi/rho/delta/void y return.
+
+07_funciones_parametros.txt: 0 errores semánticos y 0 observaciones; genera triplos sin avisos.
 
 05_funciones_correctas.txt: 0 errores semánticos y 0 observaciones.
 

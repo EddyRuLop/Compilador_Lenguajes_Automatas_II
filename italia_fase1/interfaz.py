@@ -1,6 +1,9 @@
 """Interfaz mínima: editor, botón, tabla de símbolos y tabla de errores."""
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk, scrolledtext, messagebox
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from fase2_triplos import generar_triplos, guardar_txt
 from analizador import analizar
 
 
@@ -40,7 +43,7 @@ def llenar(tabla, filas):
 
 def iniciar():
     ventana = tk.Tk()
-    ventana.title('Compilador Italia — Fase 1')
+    ventana.title('Compilador Italia — Análisis semántico y triplos')
     ventana.geometry('1100x700')
     ventana.minsize(800, 500)
     base = ttk.Frame(ventana, padding=8)
@@ -74,7 +77,49 @@ def iniciar():
             texto.insert('1.0', '\n'.join(resultado.observaciones))
             texto.configure(state='disabled')
 
-    ttk.Button(base, text='Analizar', command=ejecutar).pack(fill='x', pady=6)
+    # FASE 2. Lee directamente el editor aunque haya errores en la fase 1.
+    def exportar():
+        try:
+            avisos = []
+            filas = generar_triplos(editor.get('1.0', 'end-1c'), avisos=avisos)
+            fin = str(len(filas) + 1)
+            salida = filas
+            if any((op == 'JMP' and fuente == fin) or
+                   (fuente in ('TRUE', 'FALSE') and op == fin)
+                   for _, _, fuente, op in filas):
+                salida = filas + [(int(fin), '', '', '')]
+            with TemporaryDirectory() as carpeta:
+                ruta = Path(carpeta) / 'triplos.txt'
+                guardar_txt(ruta, salida)
+                contenido = ruta.read_text(encoding='utf-8-sig')
+            vista = tk.Toplevel(ventana)
+            vista.title('triplos.txt')
+            texto = scrolledtext.ScrolledText(vista, width=94, height=27,
+                                             wrap='none', font=('Consolas', 11))
+            texto.pack(fill='both', expand=True)
+            # Alinear la vista sin alterar el TXT separado por tabulaciones.
+            import csv
+            columnas = list(csv.reader(contenido.splitlines(), delimiter='\t'))
+            anchos = [max(map(len, columna)) for columna in zip(*columnas)]
+            texto.insert('1.0', '\n'.join('  '.join(c.ljust(a) for c, a in zip(f, anchos))
+                                         for f in columnas))
+            texto.configure(state='disabled')
+            if avisos:
+                ttk.Label(vista, text='Salida parcial. Se omitieron instrucciones que no se pudieron interpretar.').pack(anchor='w')
+                detalle = scrolledtext.ScrolledText(vista, height=5, wrap='word')
+                detalle.pack(fill='x')
+                detalle.insert('1.0', '\n'.join(avisos))
+                detalle.configure(state='disabled')
+            estado.set(f'Fase 2 · {len(filas)} triplos generados')
+        except (ValueError, OSError) as error:
+            messagebox.showerror('Fase 2 · Generar triplo', str(error), parent=ventana)
+        except RecursionError:
+            messagebox.showerror('Fase 2', 'La expresión o bloque supera el nivel de anidación admitido.', parent=ventana)
+
+    botones = ttk.Frame(base)
+    botones.pack(fill='x', pady=6)
+    ttk.Button(botones, text='Analizar', command=ejecutar).pack(side='left', expand=True, fill='x')
+    ttk.Button(botones, text='Generar triplo', command=exportar).pack(side='left', expand=True, fill='x')
     ttk.Label(base, textvariable=estado).pack(anchor='w', pady=(0, 5))
     contenedor.pack(fill='both', expand=True)
     ventana.mainloop()

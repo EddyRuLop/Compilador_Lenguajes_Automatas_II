@@ -1,11 +1,13 @@
 # Revisión: funciones con delimitadores
 
-Actualización del 2 de octubre de 2026.
+Actualización del 5 de noviembre de 2026.
 
 Las declaraciones y llamadas usan `/<nombre>/()`. Los identificadores siguen
 la misma expresión regular que las variables. Sin paréntesis, `/<nombre>/`
 se considera una variable. La sintaxis anterior, como `Suma()`, se rechaza.
-Las funciones continúan sin parámetros ni argumentos.
+Las funciones admiten parámetros tipados y llamadas con argumentos, incluidas
+expresiones y llamadas anidadas. Los parámetros se declaran en el ámbito local
+del cuerpo, que admite instrucciones y ciclos `while`.
 
 ## Implementación
 

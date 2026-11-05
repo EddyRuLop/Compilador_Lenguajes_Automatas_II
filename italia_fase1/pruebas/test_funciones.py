@@ -145,7 +145,7 @@ void /<Proceso>/() { /<n>/ = /<Suma>/(); return; }
         self.assertFalse(r.errores or r.observaciones, r)
 
     def test_rechazos_explicitos(self):
-        for codigo in ['phi /<A>/(phi /<p>/){return 1;}', '/<A>/(1);', 'phi A(){return 1;}',
+        for codigo in ['phi A(){return 1;}',
                        'void /<x>/;', 'phi A;', 'phi /<A>/()', 'phi /<A>/( {}', 'phi /<A>/){return 1;}',
                        'phi /<A_B>/(){return 1;}', 'phi /<Á>/(){return 1;}', 'phi 2A(){return 1;}',
                        'phi return(){return 1;}', '/<x>/=Suma;', '/<Suma>/()();']:

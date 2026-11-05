@@ -12,23 +12,45 @@ PRECEDENCIA = {'||': 1, '&&': 2, '==': 3, '!=': 3, '<': 3, '>': 3,
 
 
 def reconocer_llamadas(tokens, resultado):
-    """/<Nombre>/ ( ) pasa a ser un operando LLAMADA; conserva nombre y posición.
+    """Agrupa llamadas y sus argumentos con una pila, incluso si están anidadas.
 
     La tabla de símbolos usa los tokens originales y conserva ( y ) separados.
     Sin paréntesis, /<Nombre>/ conserva su categoría de variable.
     """
-    salida, i = [], 0
-    while i < len(tokens):
-        t = tokens[i]
+    salida, pila = [], []
+    for t in tokens:
         if t.clase == 'NOMBRE':
-            if i + 2 >= len(tokens) or tokens[i + 1].lexema != '(' or tokens[i + 2].lexema != ')':
-                resultado.avisar(t, 'Una función se llama /<Nombre>/(); esta fase no admite argumentos.')
+            salida.append(t)
+        elif t.lexema == '(':
+            nombre = salida.pop() if salida and salida[-1].clase == 'NOMBRE' else None
+            pila.append((salida, nombre, []))
+            salida = []
+        elif t.lexema == ',' and pila and pila[-1][1] is not None:
+            if validar(salida, resultado) is None:
+                if not salida:
+                    resultado.avisar(t, 'Falta un argumento antes de la coma.')
                 return None
-            salida.append(Token('LLAMADA', t.lexema, t.linea, t.columna))
-            i += 3
+            pila[-1][2].append(salida)
+            salida = []
+        elif t.lexema == ')' and pila:
+            anterior, nombre, args = pila.pop()
+            if nombre is None:
+                anterior.extend([Token('SIMBOLO', '(', t.linea, t.columna), *salida, t])
+            else:
+                if salida or args:
+                    if validar(salida, resultado) is None:
+                        if not salida:
+                            resultado.avisar(t, 'Falta un argumento después de la coma.')
+                        return None
+                    args.append(salida)
+                anterior.append(Token('LLAMADA', nombre.lexema, nombre.linea,
+                                      nombre.columna, args))
+            salida = anterior
         else:
             salida.append(t)
-            i += 1
+    if pila:
+        resultado.avisar(tokens[-1], 'Falta cerrar un paréntesis.')
+        return None
     return salida
 
 

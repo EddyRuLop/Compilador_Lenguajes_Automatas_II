@@ -1,4 +1,4 @@
-"""Funciones sin parámetros y reglas del PDF III (páginas 6, 7, 13, 15 y 33).
+"""Funciones con parámetros tipados y reglas de retorno del PDF III.
 
 /<Suma>/ es un nombre elegido por el usuario; void es un tipo de retorno.
 Las funciones se registran al encontrar su cabecera, antes de revisar el cuerpo.
@@ -16,6 +16,7 @@ def declarar(inst, simbolos, resultado):
         resultado.error(inst.inicio, DUPLICADA)
     else:
         simbolos.funciones[nombre] = inst.tipo
+        simbolos.parametros[nombre] = inst.parametros
         simbolos.filas_funciones[nombre]['Tipo'] = inst.tipo
     # Contexto del cuerpo: tipo escrito y presencia de un return con valor.
     return {'inicio': inst.inicio, 'tipo': inst.tipo, 'retorno': False}
@@ -23,12 +24,27 @@ def declarar(inst, simbolos, resultado):
 
 def revisar_llamadas(tokens, simbolos, resultado):
     """El error conserva /<Suma>/; los paréntesis no son parte del lexema."""
-    i = 0
-    while i < len(tokens):
-        t = tokens[i]
-        if t.clase == 'LLAMADA' and t.lexema not in simbolos.funciones:
+    pendientes = list(reversed(tokens))
+    while pendientes:
+        t = pendientes.pop()
+        if t.clase != 'LLAMADA':
+            continue
+        if t.lexema not in simbolos.funciones:
             resultado.error(t, FUNCION_INDEFINIDA)
-        i += 1
+            formales = []
+        else:
+            formales = simbolos.parametros[t.lexema]
+            if len(t.argumentos) != len(formales):
+                resultado.avisar(t, f'La función {t.lexema} espera {len(formales)} argumentos '
+                                   f'y recibió {len(t.argumentos)}.')
+        for indice, argumento in enumerate(t.argumentos):
+            indefinidas.revisar(argumento, simbolos, resultado)
+            if indice < len(formales):
+                tipo = formales[indice][1]
+                asignaciones.revisar(argumento, tipo, simbolos, resultado)
+                aritmetica.revisar(argumento, tipo, resultado)
+        for argumento in reversed(t.argumentos):
+            pendientes.extend(reversed(argumento))
 
 
 def revisar_retorno(inst, contexto, simbolos, resultado):

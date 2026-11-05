@@ -137,7 +137,7 @@ La tabla visible puede contener todos los lexemas desde el inicio del análisis,
 
 ### `indefinidas.py`: variables no declaradas
 
-`revisar()` recorre los tokens de una instrucción y consulta los identificadores de variable. Si no encuentra uno en los ámbitos disponibles, agrega `Variable indefinida` y conserva su símbolo sin tipo. Comprueba cada aparición.
+`revisar()` recorre los tokens de una instrucción y consulta los identificadores de variable. Si no encuentra uno en los ámbitos disponibles, conserva su símbolo sin tipo. La tabla muestra un solo error `Variable indefinida` por lexema, en el primer renglón detectado.
 
 ### `duplicadas.py`: declaraciones repetidas
 
@@ -199,9 +199,9 @@ Al terminar devuelve el resultado. Cada llamada comienza con listas y ámbitos n
 
 Los identificadores de variable cumplen `/<[a-zA-Z0-9]+>/`. Se aceptan letras y números ASCII, incluso números al inicio. No se aceptan espacios, guiones bajos ni acentos dentro del nombre. Las mayúsculas distinguen nombres.
 
-Las funciones usan el mismo formato que las variables y obligatoriamente los paréntesis: `phi /<Suma>/() { return 2 + 3; }`. También se admite `/<123>/()` porque la expresión regular del equipo permite dígitos al inicio. `void` indica que una función no devuelve un valor: `void /<Mostrar>/() { return; }`. Esta fase admite funciones sin parámetros ni argumentos, declaradas en el ámbito global. Las formas antiguas `Suma()` y `phi Suma()` se rechazan.
+Las funciones usan el mismo formato que las variables y obligatoriamente los paréntesis: `phi /<Suma>/() { return 2 + 3; }`. También se admite `/<123>/()` porque la expresión regular del equipo permite dígitos al inicio. `void` indica que una función no devuelve un valor: `void /<Mostrar>/() { return; }`. Se admiten parámetros tipados, por ejemplo `phi /<Suma>/(phi /<a>/, phi /<b>/) { return /<a>/ + /<b>/; }`, y argumentos como `/<Suma>/(2, 3 + 4)`. Los parámetros son variables locales del cuerpo; se comprueban su duplicación y la cantidad y los tipos de los argumentos. El cuerpo puede contener declaraciones, asignaciones, llamadas, `while` y `return`. Las funciones se declaran en el ámbito global. Las formas antiguas `Suma()` y `phi Suma()` se rechazan.
 
-Al terminar de reconocer los tokens, `entrada.py` clasifica como nombre de función al identificador seguido de `(`, incluso si hay espacios, saltos o comentarios entre ambos. Después se comprueba que tenga los paréntesis vacíos y completos. Sin paréntesis se interpreta como variable.
+Al terminar de reconocer los tokens, `entrada.py` clasifica como nombre de función al identificador seguido de `(`, incluso si hay espacios, saltos o comentarios entre ambos. Después se comprueban los paréntesis completos y los parámetros o argumentos de su interior, que también pueden estar vacíos. Sin paréntesis se interpreta como variable.
 
 Todos los textos entre comillas simples o dobles tienen tipo `delta`, incluidos `'A'`, `'Hola'`, `''` y `"Hola"`. También se admiten comillas tipográficas emparejadas. Se eliminó el tipo interno de carácter y la restricción de un solo carácter entre comillas simples. Los números reales requieren dígitos a ambos lados del punto, como `12.5`.
 
@@ -229,7 +229,7 @@ Los PDF no son completamente uniformes en sus tablas: algunas muestran solo el e
 
 En los PDF I–III no hay un catálogo completo de descripciones léxicas y sintácticas. Los números mal escritos, identificadores inválidos y llaves faltantes se presentan como observaciones de entrada. **Cero errores semánticos no significa que el programa sea válido si tiene observaciones.**
 
-El PDF I también menciona conceptos generales como argumentos de funciones y otras estructuras de control. No todos pertenecen al alcance implementado: aquí las funciones son sin parámetros y la estructura de control es `while`. La revisión confirma las reglas de esta fase, no la implementación de todo lo que se menciona teóricamente en los PDF.
+El PDF I también menciona conceptos generales como argumentos de funciones y otras estructuras de control. Se admiten funciones con parámetros y argumentos; la estructura de control de esta fase sigue siendo `while`. La revisión confirma las reglas de esta fase, no la implementación de todo lo que se menciona teóricamente en los PDF.
 
 La actividad de las páginas 34–37 del PDF III pide además un documento PDF de evidencias. El código de prueba de esa actividad está incluido; este ZIP no sustituye ese documento académico si la maestra lo solicita como entrega adicional.
 

@@ -3,7 +3,7 @@ from reglas import INDEFINIDA
 
 
 def revisar(tokens, simbolos, resultado):
-    """Marca todas las apariciones; el símbolo indefinido permanece sin tipo."""
+    """Conserva el símbolo sin tipo y registra el primer error por lexema."""
     i = 0
     while i < len(tokens):
         token = tokens[i]

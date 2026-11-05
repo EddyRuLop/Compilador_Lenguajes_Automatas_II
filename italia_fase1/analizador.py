@@ -11,9 +11,9 @@ import ciclos
 import funciones
 
 
-def analizar(codigo):
+def analizar(codigo, modo_pdf=False):
     resultado = Resultado()
-    tokens = tokenizar(codigo, resultado)
+    tokens = tokenizar(codigo, resultado, modo_pdf)
     instrucciones = separar(tokens, resultado)
     simbolos = Simbolos(tokens, resultado)
     bloques = []
@@ -65,6 +65,8 @@ def analizar(codigo):
         elif inst.clase == 'FUNCION':
             contexto = funciones.declarar(inst, simbolos, resultado)
             simbolos.entrar()
+            for parametro, tipo in inst.parametros:
+                duplicadas.declarar([parametro], tipo, simbolos, resultado)
             bloques.append('FUNCION')
         elif inst.clase == 'RETURN':
             funciones.revisar_retorno(inst, contexto, simbolos, resultado)

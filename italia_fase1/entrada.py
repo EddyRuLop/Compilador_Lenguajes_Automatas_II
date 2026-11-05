@@ -15,7 +15,7 @@ MAX_CARACTERES = 250_000
 MAX_TOKENS = 50_000
 
 
-def tokenizar(codigo, resultado):
+def tokenizar(codigo, resultado, modo_pdf=False):
     """Siempre consume caracteres: incluso una entrada inválida hace avanzar."""
     tokens = []
     i, linea, columna = 0, 1, 1
@@ -99,6 +99,8 @@ def tokenizar(codigo, resultado):
                 clase = 'INVALIDO'
             if clase == 'INVALIDO':
                 detalle = 'Palabra no admitida. Las variables usan /<nombre>/ y las funciones /<nombre>/().'
+            if modo_pdf and clase == 'INVALIDO' and palabra.upper() not in ('AND', 'OR'):
+                clase, detalle = ('TIPO' if palabra in ('int', 'float', 'String') else 'ID'), ''
         elif codigo[i:i + 2] in DOBLES:
             i += 2
         elif c in SIMPLES:
@@ -106,7 +108,13 @@ def tokenizar(codigo, resultado):
         else:
             i += 1
             clase, detalle = 'INVALIDO', 'Símbolo no admitido.'
-        token = Token(clase, codigo[inicio:i], linea, col)
+        lexema = codigo[inicio:i]
+        if modo_pdf and clase == 'TIPO':
+            lexema = {'int': 'phi', 'float': 'rho', 'String': 'delta'}.get(lexema, lexema)
+        if clase == 'INVALIDO' and lexema.upper() in ('AND', 'OR'):
+            lexema = '&&' if lexema.upper() == 'AND' else '||'
+            clase, detalle = 'SIMBOLO', ''
+        token = Token(clase, lexema, linea, col)
         tokens.append(token)
         columna += i - inicio
         if detalle:

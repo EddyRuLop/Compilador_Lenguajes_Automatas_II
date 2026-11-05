@@ -15,18 +15,38 @@ def siguiente_visible(tokens, i):
 
 
 def cabecera_funcion(tokens, i, resultado):
-    """Acepta tipo /<Nombre>/() {. No consume la siguiente sentencia al fallar."""
+    """Acepta parámetros tipados y aísla el cuerpo si la cabecera es inválida."""
     inicio = tokens[i]
     nombre_i = siguiente_visible(tokens, i + 1)
     nombre = tokens[nombre_i]
     j = siguiente_visible(tokens, nombre_i + 1)
+    parametros = []
     if tokens[j].lexema == '(':
         j = siguiente_visible(tokens, j + 1)
-        if tokens[j].lexema == ')':
+        valida = True
+        while tokens[j].lexema != ')':
+            if tokens[j].clase != 'TIPO':
+                valida = False
+                break
+            tipo = tokens[j].lexema
+            j = siguiente_visible(tokens, j + 1)
+            if tokens[j].clase != 'ID':
+                valida = False
+                break
+            parametros.append((tokens[j], tipo))
+            j = siguiente_visible(tokens, j + 1)
+            if tokens[j].lexema != ',':
+                break
+            j = siguiente_visible(tokens, j + 1)
+            if tokens[j].clase != 'TIPO':
+                valida = False
+                break
+        if valida and tokens[j].lexema == ')':
             j = siguiente_visible(tokens, j + 1)
             if tokens[j].lexema == '{':
-                return Instruccion('FUNCION', nombre, [nombre], inicio.lexema), j + 1
-    resultado.avisar(nombre, 'Declaración de función inválida. Use tipo /<Nombre>/() {; sin parámetros.')
+                return Instruccion('FUNCION', nombre, [nombre], inicio.lexema,
+                                   parametros=parametros), j + 1
+    resultado.avisar(nombre, 'Declaración de función inválida. Use tipo /<Nombre>/(tipo /<parametro>/, ...) { ... }.')
     # Recoge una cabecera rota hasta un límite seguro. Su cuerpo se aísla para
     # que una declaración inválida no publique variables o funciones globales.
     j = nombre_i + 1
@@ -165,7 +185,7 @@ def construir(parte, resultado):
         if expresion is not None:
             if len(expresion) == 1 and expresion[0].clase == 'LLAMADA':
                 return Instruccion('LLAMADA', inicio, expresion=expresion)
-            resultado.avisar(inicio, 'Una llamada como instrucción debe ser /<Nombre>/().')
+            resultado.avisar(inicio, 'Una llamada como instrucción debe ser /<Nombre>/(argumentos).')
         return None
     if inicio.clase == 'VOID':
         resultado.avisar(inicio, 'void solo declara funciones: void /<Nombre>/() { ... }.')

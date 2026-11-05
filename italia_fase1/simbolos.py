@@ -12,6 +12,7 @@ class Simbolos:
         self.siguiente_ambito = 1
         self.pendientes = {}
         self.funciones = {}  # Solo funciones declaradas hasta el punto actual.
+        self.parametros = {}
         # Primera pasada: lexemas no repetidos en orden de aparición.
         i = 0
         while i < len(tokens):
